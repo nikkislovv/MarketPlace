@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Server.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ namespace Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureIISIntegration();
 
             services.AddControllers();
         }
@@ -38,6 +40,11 @@ namespace Server
                 app.UseDeveloperExceptionPage();
 
             }
+            else
+            {
+                app.UseHsts();
+            }
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 
