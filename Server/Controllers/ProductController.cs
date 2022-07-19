@@ -24,18 +24,10 @@ namespace Server.Controllers
         }
         [HttpGet("ShowAll")]
         public async Task<IActionResult> GetAllProductsAsync()
-        {
-            try
-            {
-                var products = await _repository.Product.GetAllProductsAsync(false);
-                var productsDto=_mapper.Map<IEquatable<ProductToShowDto>>(products);
-                return Ok(productsDto);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Something went wrong in the {nameof(GetAllProductsAsync)}action {ex} ");
-                return StatusCode(500, "Internal server error");
-            }
+        { 
+            var products = await _repository.Product.GetAllProductsAsync(false);
+            var productsDto=_mapper.Map<IEquatable<ProductToShowDto>>(products);
+            return Ok(productsDto);
         }
     }
 }
