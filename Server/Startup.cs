@@ -38,6 +38,7 @@ namespace Server
             services.ConfigureSqlContext(Configuration);
             services.AddAuthentication();
             services.ConfigureIdentity();
+            services.ConfigureRepositoryManager();
 
 
             services.AddControllers();

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Repository;
 
 namespace Server.Extensions
 {
@@ -42,6 +43,10 @@ namespace Server.Extensions
            builder.Services);
             builder.AddEntityFrameworkStores<RepositoryContext>()
             .AddDefaultTokenProviders();
+        }
+        public static void ConfigureRepositoryManager(this IServiceCollection services)
+        {
+            services.AddScoped<IRepositoryManager, RepositoryManager>();
         }
     }
 }
