@@ -13,5 +13,7 @@ namespace Entities.Models
         public string Comment { get; set; }
         public Guid ProductId { get; set; }
         public virtual Product Product { get; set; }
+        public string UserId { get; set; }//аккаунт с которого писался отзыв
+        public virtual User User { get; set; }
     }
 }

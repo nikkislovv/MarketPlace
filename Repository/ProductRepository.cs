@@ -31,10 +31,10 @@ namespace Repository
         {
             return await FindAll(trackChanges).ToListAsync();
         }
-        //public async Task<IEnumerable<Product>> GetProductsByAccountAsync(Guid uderId, bool trackChanges)
-        //{
-        //    return await FindByCondition(e => e.UserId.Equals(uderId), trackChanges).ToListAsync();
-        //}
+        public async Task<IEnumerable<Product>> GetProductsByAccountAsync(Guid uderId, bool trackChanges)
+        {
+            return await FindByCondition(e => e.UserId.Equals(uderId), trackChanges).ToListAsync();
+        }
         public async Task<IEnumerable<Product>> GetProductsByWarehouseAsync(Guid WarehouseId, bool trackChanges)
         {
             return await FindByCondition(e => e.WarehouseId.Equals(WarehouseId), trackChanges).ToListAsync();

@@ -4,14 +4,16 @@ using Entities.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Server.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    partial class RepositoryContextModelSnapshot : ModelSnapshot
+    [Migration("20220719180505_someChangies")]
+    partial class someChangies
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,7 +72,8 @@ namespace Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -97,7 +100,8 @@ namespace Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeliveryPointId");
+                    b.HasIndex("DeliveryPointId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -132,7 +136,8 @@ namespace Server.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("WarehouseId");
+                    b.HasIndex("WarehouseId")
+                        .IsUnique();
 
                     b.ToTable("Products");
                 });
@@ -380,13 +385,13 @@ namespace Server.Migrations
             modelBuilder.Entity("Entities.Models.Feedback", b =>
                 {
                     b.HasOne("Entities.Models.Product", "Product")
-                        .WithMany("Feedbacks")
-                        .HasForeignKey("ProductId")
+                        .WithOne("Feedback")
+                        .HasForeignKey("Entities.Models.Feedback", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Entities.Models.User", "User")
-                        .WithMany("Feedbacks")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Product");
@@ -397,8 +402,8 @@ namespace Server.Migrations
             modelBuilder.Entity("Entities.Models.Order", b =>
                 {
                     b.HasOne("Entities.Models.DeliveryPoint", "DeliveryPoint")
-                        .WithMany("Orders")
-                        .HasForeignKey("DeliveryPointId")
+                        .WithOne("Order")
+                        .HasForeignKey("Entities.Models.Order", "DeliveryPointId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -414,12 +419,12 @@ namespace Server.Migrations
             modelBuilder.Entity("Entities.Models.Product", b =>
                 {
                     b.HasOne("Entities.Models.User", "User")
-                        .WithMany("Products")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.HasOne("Entities.Models.Warehouse", "Warehouse")
-                        .WithMany("Products")
-                        .HasForeignKey("WarehouseId")
+                        .WithOne("Product")
+                        .HasForeignKey("Entities.Models.Product", "WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -496,26 +501,22 @@ namespace Server.Migrations
 
             modelBuilder.Entity("Entities.Models.DeliveryPoint", b =>
                 {
-                    b.Navigation("Orders");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Entities.Models.Product", b =>
                 {
-                    b.Navigation("Feedbacks");
+                    b.Navigation("Feedback");
                 });
 
             modelBuilder.Entity("Entities.Models.User", b =>
                 {
-                    b.Navigation("Feedbacks");
-
                     b.Navigation("Orders");
-
-                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Entities.Models.Warehouse", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }

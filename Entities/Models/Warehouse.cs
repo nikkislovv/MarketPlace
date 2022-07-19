@@ -10,6 +10,6 @@ namespace Entities.Models
     {
         public Guid Id { get; set; }
         public string Address { get; set; }
-        public virtual Product Product { get; set; }    
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

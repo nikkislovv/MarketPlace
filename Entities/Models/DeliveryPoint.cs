@@ -10,6 +10,7 @@ namespace Entities.Models
     {
         public Guid Id { get; set; }
         public string Address { get; set; }
-        public virtual Order Order { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
+
     }
 }

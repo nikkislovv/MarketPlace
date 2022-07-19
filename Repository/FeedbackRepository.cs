@@ -27,9 +27,9 @@ namespace Repository
         {
             return await FindAll(trackChanges).ToListAsync();
         }
-        //public async Task<IEnumerable<Feedback>> GetFeedbacksByAccountAsync(Guid userId, bool trackChanges)
-        //{
-        //    return await FindByCondition(e => e.UserId.Equals(userId), trackChanges).ToListAsync();
-        //}
+        public async Task<IEnumerable<Feedback>> GetFeedbacksByAccountAsync(Guid userId, bool trackChanges)
+        {
+            return await FindByCondition(e => e.UserId.Equals(userId), trackChanges).ToListAsync();
+        }
     }
 }
