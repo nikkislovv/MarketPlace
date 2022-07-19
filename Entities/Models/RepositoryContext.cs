@@ -22,7 +22,7 @@ namespace Entities.Models
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfiguration(new WarehouseConfiguration());
             modelBuilder.ApplyConfiguration(new DeliveryPointConfiguration());
-
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

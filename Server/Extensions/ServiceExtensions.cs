@@ -48,5 +48,6 @@ namespace Server.Extensions
         {
             services.AddScoped<IRepositoryManager, RepositoryManager>();
         }
+        
     }
 }
