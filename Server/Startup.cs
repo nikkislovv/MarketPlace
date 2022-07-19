@@ -39,6 +39,7 @@ namespace Server
             services.AddAuthentication();
             services.ConfigureIdentity();
             services.ConfigureRepositoryManager();
+            services.AddAutoMapper(typeof(Startup));
 
 
             services.AddControllers();
