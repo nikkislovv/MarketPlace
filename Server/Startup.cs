@@ -35,6 +35,10 @@ namespace Server
         {
             services.ConfigureIISIntegration();
             services.ConfigureLoggerService();
+            services.ConfigureSqlContext(Configuration);
+            services.AddAuthentication();
+            services.ConfigureIdentity();
+
 
             services.AddControllers();
         }
@@ -56,7 +60,7 @@ namespace Server
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
