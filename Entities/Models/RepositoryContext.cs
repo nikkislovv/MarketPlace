@@ -24,6 +24,11 @@ namespace Entities.Models
             modelBuilder.ApplyConfiguration(new DeliveryPointConfiguration());
 
         }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseLazyLoadingProxies();
+        }
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
