@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Entities.DataTransferObjects;
+using Entities.DataTransferObjects.ProductDTO;
 using Entities.Models;
 
 namespace Server.MapperProfiles
