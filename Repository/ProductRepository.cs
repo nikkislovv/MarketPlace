@@ -15,7 +15,7 @@ namespace Repository
             : base(repositoryContext)
         {
         }
-        public void CreateProductForWarehouse(Guid warehouseId,Product product)
+        public void CreateProductForWarehouse(Guid warehouseId,Product product)//
         {
             product.WarehouseId = warehouseId;
             Create(product);
@@ -24,17 +24,17 @@ namespace Repository
         {
             Delete(product);
         }
-        public async Task<Product> GetProductByIdAsync(Guid id, bool trackChanges)
+        public async Task<Product> GetProductByIdAsync(Guid id, bool trackChanges)//
         {
             return await FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
         }
-        public async Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges)
+        public async Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges)//
         {
             return await FindAll(trackChanges).ToListAsync();
         }
-        public async Task<IEnumerable<Product>> GetProductsByAccountAsync(Guid uderId, bool trackChanges)
+        public async Task<IEnumerable<Product>> GetProductsByAccountAsync(string userId, bool trackChanges)//
         {
-            return await FindByCondition(e => e.UserId.Equals(uderId), trackChanges).ToListAsync();
+            return await FindByCondition(e => e.UserId.Equals(userId), trackChanges).ToListAsync();
         }
         public async Task<IEnumerable<Product>> GetProductsByWarehouseAsync(Guid WarehouseId, bool trackChanges)
         {
