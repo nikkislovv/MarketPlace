@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NLog;
+using Server.Auth;
 using Server.Extensions;
 using System;
 using System.Collections.Generic;
@@ -37,10 +38,13 @@ namespace Server
             services.ConfigureIISIntegration();
             services.ConfigureLoggerService();
             services.ConfigureSqlContext(Configuration);
+            services.AddScoped<IAuthenticationManager, AuthenticationManager>();
             services.AddAuthentication();
             services.ConfigureIdentity();
+            services.ConfigureJWT();
             services.ConfigureRepositoryManager();
             services.AddAutoMapper(typeof(Startup));
+            services.ConfigureValidationFilter();
 
 
             services.AddControllers();

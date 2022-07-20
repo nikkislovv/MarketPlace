@@ -1,12 +1,16 @@
 ﻿using Contracts;
 using Entities.Models;
 using LoggerService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Repository;
+using Server.ActionFilters;
+using Server.Auth;
 
 namespace Server.Extensions
 {
@@ -28,6 +32,10 @@ namespace Server.Extensions
             b.MigrationsAssembly("Server")));
 
         }
+        public static void ConfigureValidationFilter(this IServiceCollection services)
+        {
+            services.AddScoped<ValidationFilterAttribute>();
+        }
         public static void ConfigureIdentity(this IServiceCollection services)
         {
             var builder = services.AddIdentityCore<User>(o =>
@@ -48,6 +56,37 @@ namespace Server.Extensions
         {
             services.AddScoped<IRepositoryManager, RepositoryManager>();
         }
-        
+
+        public static void ConfigureJWT(this IServiceCollection services)// configuring the JWT authentication
+        {
+
+            services.AddAuthentication(opt =>//JWT auth middleware 
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
+                   .AddJwtBearer(options =>
+                   {
+
+                       options.RequireHttpsMetadata = false;
+                       options.TokenValidationParameters = new TokenValidationParameters
+                       {
+
+                           ValidateIssuer = true,
+                           ValidIssuer = AuthOptions.ISSUER,
+                           ValidateAudience = true,
+                           // установка потребителя токена
+                           ValidAudience = AuthOptions.AUDIENCE,
+                           // будет ли валидироваться время существования
+                           ValidateLifetime = true,
+
+                           // установка ключа безопасности
+                           IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                           // валидация ключа безопасности
+                           ValidateIssuerSigningKey = true,
+                       };
+                   });
+        }
     }
 }
