@@ -15,8 +15,9 @@ namespace Repository
             : base(repositoryContext)
         {
         }
-        public void CreateProduct(Product product)
+        public void CreateProductForWarehouse(Guid warehouseId,Product product)
         {
+            product.WarehouseId = warehouseId;
             Create(product);
         }
         public void DeleteProduct(Product product)

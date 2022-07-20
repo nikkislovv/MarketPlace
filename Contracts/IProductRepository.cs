@@ -9,8 +9,9 @@ namespace Contracts
 {
     public interface IProductRepository
     {
-        void CreateProduct(Product order);
+        void CreateProductForWarehouse(Guid warehouseId,Product order);//создается товар 
         void DeleteProduct(Product order);//может только кто создавал карточку товара
+
         Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges);
         Task<IEnumerable<Product>> GetProductsByAccountAsync(Guid userId, bool trackChanges);//просмотр всех товаров одного продавца
         Task<IEnumerable<Product>> GetProductsByWarehouseAsync(Guid userId, bool trackChanges);//просмотр всех товаров определенного склада

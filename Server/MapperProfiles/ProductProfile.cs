@@ -12,6 +12,9 @@ namespace Server.MapperProfiles
                     .ForMember(c => c.WarehouseAddress, opt => opt.MapFrom(x => x.Warehouse.Address))
                     .ForMember(c => c.SellerName, opt => opt.MapFrom(x => x.User.FullName))
                     .ForMember(c => c.SellerName, opt => opt.MapFrom(x => x.User.FullName));
+            CreateMap<ProductToShowDto, Product>();
+            CreateMap<ProductToCreateDto, Product>();
+
 
         }
     }
