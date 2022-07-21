@@ -1,3 +1,4 @@
+using ApiApplication.Contracts;
 using Contracts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NLog;
+using ProductService;
 using Server.Auth;
 using Server.Extensions;
 using System;
@@ -45,6 +47,7 @@ namespace Server
             services.ConfigureRepositoryManager();
             services.AddAutoMapper(typeof(Startup));
             services.ConfigureValidationFilter();
+            services.AddScoped<IProductManager, ProductManager>();
 
 
             services.AddControllers();

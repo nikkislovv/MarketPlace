@@ -24,14 +24,13 @@ namespace Server.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        private readonly UserManager<User> _userManager;
 
-        public ProductsController(IRepositoryManager repository, ILoggerManager logger,IMapper mapper,UserManager<User> userManager)
+
+        public ProductsController(IRepositoryManager repository, ILoggerManager logger,IMapper mapper)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
-            _userManager = userManager;
         }
 
         [HttpGet]
@@ -64,48 +63,6 @@ namespace Server.Controllers
             var productDto=_mapper.Map<ProductToShowDto>(product);
             return Ok(productDto);
         }
-
-        //[HttpGet("ShowBySeller/{sellerId}")]
-        //[AllowAnonymous]
-        //public async Task<IActionResult> GetProductsBySeller([FromRoute]Guid sellerId)//получение всех продуктов продовца
-        //{
-        //    var seller = await _userManager.FindByIdAsync(sellerId.ToString());
-        //    var userRole=await _userManager.GetRolesAsync(seller);
-        //    if (seller == null || !userRole.Contains("seller"))
-        //    {
-        //        _logger.LogInfo($"Seller with id: {sellerId} doesn't exist in the database.");
-        //        return NotFound();
-        //    }
-        //    var products = await _repository.Product.GetProductsByAccountAsync(sellerId.ToString(), true);
-        //    if (products.Count() == 0)
-        //    {
-        //        _logger.LogInfo($"No Products in the database.");
-        //        return NotFound();
-        //    }
-        //    var productsDto = _mapper.Map<IEnumerable<ProductToShowDto>>(products);
-        //    return Ok(productsDto);
-        //}
-
-
-        //[HttpGet("ShowByWarehose/{warehouseId}")]
-        //[Authorize(Roles = "admin")]
-        //public async Task<IActionResult> GetProductsByWarehouseAsync([FromRoute]Guid warehouseId)
-        //{
-        //    var warehouse = await _repository.Warehouse.GetWarehouseByIdAsync(warehouseId,false);
-        //    if (warehouse == null)
-        //    {
-        //        _logger.LogInfo($"Warehouse with id: {warehouseId} doesn't exist in the database.");
-        //        return NotFound();
-        //    }
-        //    var products=await _repository.Product.GetProductsByWarehouseAsync(warehouseId,true);
-        //    if (products.Count() == 0)
-        //    {
-        //        _logger.LogInfo($"No Products in the database.");
-        //        return NotFound();
-        //    }
-        //    var productsDto = _mapper.Map<IEnumerable<ProductToShowDto>>(products);
-        //    return Ok(productsDto); 
-        //}
 
 
         [HttpPost]
