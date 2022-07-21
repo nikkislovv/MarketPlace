@@ -2,10 +2,12 @@
 using Contracts;
 using Entities.DataTransferObjects.ProductDTO;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Server.ActionFilters;
 using System;
 using System.Collections.Generic;
@@ -34,9 +36,12 @@ namespace Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllProductsAsync()//Получение всех продуктов
-        { 
-            var products = await _repository.Product.GetAllProductsAsync(true);
+        public async Task<IActionResult> GetAllProductsAsync([FromQuery] ProductParameters productParameters)//Получение всех продуктов
+        {
+            //if (!productParameters.ValidPriceRange)
+            //    return BadRequest("MaxPrice can notbe less then MinPrice.");
+            var products = await _repository.Product.GetAllProductsAsync(productParameters,true);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(products.MetaData));
             if (products.Count()==0)
             {
                 _logger.LogInfo($"No Products in the database.");

@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,14 @@ namespace Repository
         {
             return await FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
         }
-        public async Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges)
+        public async Task<PagedList<Product>> GetAllProductsAsync(ProductParameters productParameters,bool trackChanges)
         {
-            return await FindAll(trackChanges).ToListAsync();
+            var _products = await FindAll(trackChanges)
+                .Skip((productParameters.PageNumber - 1) * productParameters.PageSize)
+                .Take(productParameters.PageSize)
+                .ToListAsync();
+            var count = await FindAll(false).CountAsync();
+            return new PagedList<Product>(_products, count, productParameters.PageNumber, productParameters.PageSize);
         }
         //need to change on searching
         //public async Task<IEnumerable<Product>> GetProductsByAccountAsync(string userId, bool trackChanges)
