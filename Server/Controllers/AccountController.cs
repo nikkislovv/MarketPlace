@@ -45,6 +45,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("SignIn")]//аутентификация
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> Authenticate([FromBody] UserForAuthenticationDto userDto)
         {
             if (!await _authManager.ValidateUser(userDto))

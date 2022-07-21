@@ -12,7 +12,7 @@ namespace Contracts
         void CreateOrder(Order order);
         void DeleteOrder(Order order);
         Task<IEnumerable<Order>> GetAllOrdersAsync(bool trackChanges);
-        Task<IEnumerable<Order>> GetOrdersByAccountAsync(Guid userId,bool trackChanges);//получение истории заказов определенного аккаунта
+        //Task<IEnumerable<Order>> GetOrdersByAccountAsync(Guid userId,bool trackChanges);//получение истории заказов определенного аккаунта
         void UpdateOrder(Order order);
         Task<Order> GetOrderByIdAsync(Guid id, bool trackChanges);
 

@@ -12,7 +12,7 @@ namespace Contracts
         void CreateFeedback(Feedback order);
         void DeleteFeedback(Feedback order);
         Task<IEnumerable<Feedback>> GetAllFeedbacksAsync(bool trackChanges);
-        Task<IEnumerable<Feedback>> GetFeedbacksByAccountAsync(Guid userId, bool trackChanges);//получение всех комментариев по аккаунту
+        //Task<IEnumerable<Feedback>> GetFeedbacksByAccountAsync(Guid userId, bool trackChanges);//получение всех комментариев по аккаунту
 
     }
 }

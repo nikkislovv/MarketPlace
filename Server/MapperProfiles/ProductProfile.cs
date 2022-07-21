@@ -14,8 +14,7 @@ namespace Server.MapperProfiles
                     .ForMember(c => c.SellerName, opt => opt.MapFrom(x => x.User.FullName));
             CreateMap<ProductToShowDto, Product>();
             CreateMap<ProductToCreateDto, Product>();
-
-
+            CreateMap<ProductToUpdateDto, Product>();
         }
     }
 }

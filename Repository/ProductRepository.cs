@@ -15,31 +15,31 @@ namespace Repository
             : base(repositoryContext)
         {
         }
-        public void CreateProductForWarehouse(Guid warehouseId,Product product)//
+        public void CreateProduct(Product product)
         {
-            product.WarehouseId = warehouseId;
             Create(product);
         }
         public void DeleteProduct(Product product)
         {
             Delete(product);
         }
-        public async Task<Product> GetProductByIdAsync(Guid id, bool trackChanges)//
+        public async Task<Product> GetProductByIdAsync(Guid id, bool trackChanges)
         {
             return await FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
         }
-        public async Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges)//
+        public async Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges)
         {
             return await FindAll(trackChanges).ToListAsync();
         }
-        public async Task<IEnumerable<Product>> GetProductsByAccountAsync(string userId, bool trackChanges)//
-        {
-            return await FindByCondition(e => e.UserId.Equals(userId), trackChanges).ToListAsync();
-        }
-        public async Task<IEnumerable<Product>> GetProductsByWarehouseAsync(Guid WarehouseId, bool trackChanges)
-        {
-            return await FindByCondition(e => e.WarehouseId.Equals(WarehouseId), trackChanges).ToListAsync();
-        }
+        //need to change on searching
+        //public async Task<IEnumerable<Product>> GetProductsByAccountAsync(string userId, bool trackChanges)
+        //{
+        //    return await FindByCondition(e => e.UserId.Equals(userId), trackChanges).ToListAsync();
+        //}
+        //public async Task<IEnumerable<Product>> GetProductsByWarehouseAsync(Guid WarehouseId, bool trackChanges)
+        //{
+        //    return await FindByCondition(e => e.WarehouseId.Equals(WarehouseId), trackChanges).ToListAsync();
+        //}
         public void UpdateProduct(Product product)
         {
             Update(product);

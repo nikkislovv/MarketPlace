@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entities.DataTransferObjects.ProductDTO
 {
-    public class ProductToCreateDto:ProductToHandleDto
+    public class ProductToUpdateDto:ProductToHandleDto
     {
     }
 }

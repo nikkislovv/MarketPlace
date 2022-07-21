@@ -9,12 +9,12 @@ namespace Contracts
 {
     public interface IProductRepository
     {
-        void CreateProductForWarehouse(Guid warehouseId,Product order);//создается товар 
+        void CreateProduct(Product order);//создается товар 
         void DeleteProduct(Product order);//может только кто создавал карточку товара
 
         Task<IEnumerable<Product>> GetAllProductsAsync(bool trackChanges);
-        Task<IEnumerable<Product>> GetProductsByAccountAsync(string userId, bool trackChanges);//просмотр всех товаров одного продавца
-        Task<IEnumerable<Product>> GetProductsByWarehouseAsync(Guid userId, bool trackChanges);//просмотр всех товаров определенного склада
+        //Task<IEnumerable<Product>> GetProductsByAccountAsync(string userId, bool trackChanges);//просмотр всех товаров одного продавца
+        //Task<IEnumerable<Product>> GetProductsByWarehouseAsync(Guid userId, bool trackChanges);//просмотр всех товаров определенного склада
         void UpdateProduct(Product order);//может только кто создавал карточку товара
         Task<Product> GetProductByIdAsync(Guid id, bool trackChanges);
     }
