@@ -38,8 +38,8 @@ namespace Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAllProductsAsync([FromQuery] ProductParameters productParameters)//Получение всех продуктов
         {
-            //if (!productParameters.ValidPriceRange)
-            //    return BadRequest("MaxPrice can notbe less then MinPrice.");
+            if (!productParameters.ValidPriceRange)
+                return BadRequest("MaxPrice can notbe less then MinPrice.");
             var products = await _repository.Product.GetAllProductsAsync(productParameters,true);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(products.MetaData));
             if (products.Count()==0)

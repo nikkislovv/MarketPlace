@@ -1,4 +1,5 @@
-﻿using Contracts;
+﻿using ApiApplication.Repository.RepositoryPhoneExtensions;
+using Contracts;
 using Entities.Models;
 using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
@@ -31,21 +32,15 @@ namespace Repository
         public async Task<PagedList<Product>> GetAllProductsAsync(ProductParameters productParameters,bool trackChanges)
         {
             var _products = await FindAll(trackChanges)
+                .FilterProducts(productParameters.MinPrice, productParameters.MaxPrice)//filtering by price
                 .Skip((productParameters.PageNumber - 1) * productParameters.PageSize)
                 .Take(productParameters.PageSize)
                 .ToListAsync();
-            var count = await FindAll(false).CountAsync();
+            var count = await FindAll(false)
+                .FilterProducts(productParameters.MinPrice, productParameters.MaxPrice)//filtering by price
+                .CountAsync();
             return new PagedList<Product>(_products, count, productParameters.PageNumber, productParameters.PageSize);
         }
-        //need to change on searching
-        //public async Task<IEnumerable<Product>> GetProductsByAccountAsync(string userId, bool trackChanges)
-        //{
-        //    return await FindByCondition(e => e.UserId.Equals(userId), trackChanges).ToListAsync();
-        //}
-        //public async Task<IEnumerable<Product>> GetProductsByWarehouseAsync(Guid WarehouseId, bool trackChanges)
-        //{
-        //    return await FindByCondition(e => e.WarehouseId.Equals(WarehouseId), trackChanges).ToListAsync();
-        //}
         public void UpdateProduct(Product product)
         {
             Update(product);
