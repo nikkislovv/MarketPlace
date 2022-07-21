@@ -17,6 +17,8 @@ namespace Entities.RequestFeatures
                 return MaxPrice > MinPrice;
             }
         }
+        public string SearchByField { get; set; }//поиск по определенному полю
+        public string SearchTerm { get; set; }//значение этого поля
 
     }
 }

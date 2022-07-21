@@ -33,11 +33,14 @@ namespace Repository
         {
             var _products = await FindAll(trackChanges)
                 .FilterProducts(productParameters.MinPrice, productParameters.MaxPrice)//filtering by price
-                .Skip((productParameters.PageNumber - 1) * productParameters.PageSize)
+                .Search(productParameters.SearchByField,productParameters.SearchTerm)//searching
+                .OrderBy(e=>e.Price)//sorting
+                .Skip((productParameters.PageNumber - 1) * productParameters.PageSize)//paging
                 .Take(productParameters.PageSize)
                 .ToListAsync();
             var count = await FindAll(false)
                 .FilterProducts(productParameters.MinPrice, productParameters.MaxPrice)//filtering by price
+                .Search(productParameters.SearchByField, productParameters.SearchTerm)//searching
                 .CountAsync();
             return new PagedList<Product>(_products, count, productParameters.PageNumber, productParameters.PageSize);
         }
