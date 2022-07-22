@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Entities.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,7 @@ namespace Contracts
     {
         void CreateOrder(Order order);
         void DeleteOrder(Order order);
-        Task<IEnumerable<Order>> GetAllOrdersAsync(bool trackChanges);
-        //Task<IEnumerable<Order>> GetOrdersByAccountAsync(Guid userId,bool trackChanges);//получение истории заказов определенного аккаунта
+        Task<PagedList<Order>> GetAllOrdersAsync(OrderParameters orderParameters, bool trackChanges);
         void UpdateOrder(Order order);
         Task<Order> GetOrderByIdAsync(Guid id, bool trackChanges);
 

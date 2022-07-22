@@ -21,7 +21,7 @@ namespace Entities.Configuration
             },
             new IdentityRole
             {
-                Name = "Admin",
+                Name = "admin",
                 NormalizedName = "ADMIN"
             },
             new IdentityRole

@@ -9,6 +9,12 @@ namespace Server.MapperProfiles
         public OrderProfile()
         {
             CreateMap<OrderToCreateDto, Order>();
+            CreateMap<Order, OrderToShowDto>()
+                    .ForMember(c => c.DeliveryPointAddress, opt => opt.MapFrom(x => x.DeliveryPoint.Address))
+                    .ForMember(c => c.UserName, opt => opt.MapFrom(x => x.User.FullName));
+
+
+
 
         }
     }

@@ -3,6 +3,7 @@ using Contracts;
 using Entities.DataTransferObjects.OrderDTO;
 using Entities.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ProductService
@@ -19,9 +20,9 @@ namespace ProductService
         {
             order.Products.Clear();
         }
-        public async Task<bool> AddProductCollection(Order order, OrderToHandleDto orderDto)
+        public async Task<bool> AddProductCollection(Order order, IEnumerable<Guid> productsIds)
         {
-            foreach (Guid item in orderDto.ProductsIds)
+            foreach (Guid item in productsIds)
             {
                 var product = await _repository.Product.GetProductByIdAsync(item, true);
                 if (product != null)
@@ -31,5 +32,28 @@ namespace ProductService
             }
             return order.Products.Count > 0;
         }
+        public async Task<bool> CheckForAvailability(IEnumerable<Guid> productsIds)
+        {
+            foreach (Guid item in productsIds)
+            {
+                var product = await _repository.Product.GetProductByIdAsync(item,true);
+                if (product ==null||product.Quantity==0)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        public async Task<bool> ControlOfQuantity(IEnumerable<Product> products)
+        {
+            foreach (Product item in products)
+            {
+                item.Quantity--;
+                _repository.Product.UpdateProduct(item);
+            }
+            await _repository.SaveAsync();
+            return true;
+        }
+
     }
 }

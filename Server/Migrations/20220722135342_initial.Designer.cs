@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Server.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20220719211139_lazyloading")]
-    partial class lazyloading
+    [Migration("20220722135342_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -258,6 +258,29 @@ namespace Server.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "ad76cae7-10d3-41ac-b2d8-23748ace18e9",
+                            ConcurrencyStamp = "adb15d41-93ca-40b6-8060-08b1b720b092",
+                            Name = "client",
+                            NormalizedName = "CLIENT"
+                        },
+                        new
+                        {
+                            Id = "3383a261-4082-44fc-a363-0a855f03ccc5",
+                            ConcurrencyStamp = "edf4f3cc-9dbe-4ec6-bf2f-ce368d5048d5",
+                            Name = "admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "a02ec49e-44f1-4230-a029-8520c6a0263d",
+                            ConcurrencyStamp = "fda43d57-7078-429b-a87e-ea0a1c57461b",
+                            Name = "seller",
+                            NormalizedName = "SELLER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

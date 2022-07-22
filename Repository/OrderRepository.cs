@@ -1,5 +1,7 @@
-﻿using Contracts;
+﻿using ApiApplication.Repository.RepositoryPhoneExtensions;
+using Contracts;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,14 +29,19 @@ namespace Repository
         {
             return await FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
         }
-        public async Task<IEnumerable<Order>> GetAllOrdersAsync(bool trackChanges)
+        public async Task<PagedList<Order>> GetAllOrdersAsync(OrderParameters orderParameters, bool trackChanges)
         {
-            return await FindAll(trackChanges).ToListAsync();         
+            var orders = await FindAll(trackChanges)
+               .Search(orderParameters.SearchByField, orderParameters.SearchTerm)//searching
+               .OrderBy(e => e.FullName)//sorting
+               .Skip((orderParameters.PageNumber - 1) * orderParameters.PageSize)//paging
+               .Take(orderParameters.PageSize)
+               .ToListAsync();
+            var count = await FindAll(true)
+                .Search(orderParameters.SearchByField, orderParameters.SearchTerm)//searching
+                .CountAsync();
+            return new PagedList<Order>(orders, count, orderParameters.PageNumber, orderParameters.PageSize);
         }
-        //public async Task<IEnumerable<Order>> GetOrdersByAccountAsync(Guid userId, bool trackChanges)
-        //{
-        //    return await FindByCondition(e => e.UserId.Equals(userId), trackChanges).ToListAsync();
-        //}
         public void UpdateOrder(Order order)
         {
             Update(order);

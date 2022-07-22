@@ -260,22 +260,22 @@ namespace Server.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "68b3e288-5034-40d2-a4ba-f622f1dadd49",
-                            ConcurrencyStamp = "56ba57d4-3a87-4ae5-a7c5-cf1c01803bfa",
+                            Id = "ad76cae7-10d3-41ac-b2d8-23748ace18e9",
+                            ConcurrencyStamp = "adb15d41-93ca-40b6-8060-08b1b720b092",
                             Name = "client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "cb549e9b-178c-40bf-8830-07b1cd4f3f63",
-                            ConcurrencyStamp = "e12287b3-1ab3-4829-a3af-314a19a9b81d",
-                            Name = "Admin",
+                            Id = "3383a261-4082-44fc-a363-0a855f03ccc5",
+                            ConcurrencyStamp = "edf4f3cc-9dbe-4ec6-bf2f-ce368d5048d5",
+                            Name = "admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c05a14e3-56f1-4bb1-9b6b-6dbebd651087",
-                            ConcurrencyStamp = "fe70151e-e338-4c6f-a106-a63f0e2346a2",
+                            Id = "a02ec49e-44f1-4230-a029-8520c6a0263d",
+                            ConcurrencyStamp = "fda43d57-7078-429b-a87e-ea0a1c57461b",
                             Name = "seller",
                             NormalizedName = "SELLER"
                         });
