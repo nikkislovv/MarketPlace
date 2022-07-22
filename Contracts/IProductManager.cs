@@ -12,6 +12,6 @@ namespace ApiApplication.Contracts
         Task<bool> AddProductCollection(Order order, IEnumerable<Guid> productsIds);
         Task<bool> CheckForAvailability(IEnumerable<Guid> productsIds);
         Task<bool> ControlOfQuantity(IEnumerable<Product> productsIds);
-
+        bool CheckProductInOrders(IEnumerable<Order> orders, string userId);
     }
 }

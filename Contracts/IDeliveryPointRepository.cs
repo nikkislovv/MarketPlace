@@ -9,10 +9,10 @@ namespace Contracts
 {
     public interface IDeliveryPointRepository
     {
-        void CreateDeliveryPoint(DeliveryPoint order);
-        void DeleteDeliveryPoint(DeliveryPoint order);
+        void CreateDeliveryPoint(DeliveryPoint deliveryPoint);
+        void DeleteDeliveryPoint(DeliveryPoint deliveryPoint);
         Task<IEnumerable<DeliveryPoint>> GetAllDeliveryPointsAsync( bool trackChanges);
-        void UpdateDeliveryPoint(DeliveryPoint order);
+        void UpdateDeliveryPoint(DeliveryPoint deliveryPoint);
         Task<DeliveryPoint> GetDeliveryPointByIdAsync(Guid id, bool trackChanges);
 
     }

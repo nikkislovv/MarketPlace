@@ -55,5 +55,16 @@ namespace ProductService
             return true;
         }
 
+        public bool CheckProductInOrders(IEnumerable<Order> orders,string userId)
+        {
+            foreach (Order item in orders)
+            {
+                if (item.UserId==userId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

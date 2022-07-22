@@ -9,10 +9,10 @@ namespace Contracts
 {
     public interface IWarehouseRepository
     {
-        void CreateWarehouse(Warehouse order);
-        void DeleteWarehouse(Warehouse order);
+        void CreateWarehouse(Warehouse warehouse);
+        void DeleteWarehouse(Warehouse warehouse);
         Task<IEnumerable<Warehouse>> GetAllWarehousesAsync(bool trackChanges);
-        void UpdateWarehouse(Warehouse order);
+        void UpdateWarehouse(Warehouse warehouse);
         Task<Warehouse> GetWarehouseByIdAsync(Guid id, bool trackChanges);
     }
 }

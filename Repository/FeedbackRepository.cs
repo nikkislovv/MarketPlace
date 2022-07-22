@@ -15,8 +15,9 @@ namespace Repository
             : base(repositoryContext)
         {
         }
-        public void CreateFeedback(Feedback feedback)
+        public void CreateFeedbackForProduct(Guid productId,Feedback feedback)
         {
+            feedback.ProductId = productId;
             Create(feedback);
         }
         public void DeleteFeedback(Feedback feedback)

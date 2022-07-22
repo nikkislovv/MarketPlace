@@ -9,10 +9,9 @@ namespace Contracts
 {
     public interface IFeedbackRepository
     {
-        void CreateFeedback(Feedback order);
-        void DeleteFeedback(Feedback order);
+        void CreateFeedbackForProduct(Guid productId,Feedback feedback);
+        void DeleteFeedback(Feedback feedback);
         Task<IEnumerable<Feedback>> GetAllFeedbacksAsync(bool trackChanges);
-        //Task<IEnumerable<Feedback>> GetFeedbacksByAccountAsync(Guid userId, bool trackChanges);//получение всех комментариев по аккаунту
 
     }
 }

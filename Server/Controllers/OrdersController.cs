@@ -109,6 +109,7 @@ namespace Server.Controllers
         }
 
         [HttpPut("{Id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateOrderAsync([FromRoute] Guid Id,OrderToUpdateDto orderDto)
         {
             var order=await _repository.Order.GetOrderByIdAsync(Id,true);
