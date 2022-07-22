@@ -24,19 +24,23 @@ namespace Server.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
 
 
-        public ProductsController(IRepositoryManager repository, ILoggerManager logger,IMapper mapper)
+
+        public ProductsController(IRepositoryManager repository, ILoggerManager logger,IMapper mapper, UserManager<User> userManager)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllProductsAsync([FromQuery] ProductParameters productParameters)//Получение всех продуктов
         {
+
             if (!productParameters.ValidPriceRange)
                 return BadRequest("MaxPrice can notbe less then MinPrice.");
             var products = await _repository.Product.GetAllProductsAsync(productParameters,true);
@@ -94,7 +98,9 @@ namespace Server.Controllers
                 _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
                 return NotFound();
             }
-            if (product.UserId != User.FindFirst(e => e.Type == "Id").Value && "admin" != User.FindFirst(e => e.Type == "Id").Value)
+            var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
+            var role = await _userManager.GetRolesAsync(user);
+            if (product.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))
             {
                 return Forbid();
             }
@@ -114,7 +120,9 @@ namespace Server.Controllers
                 _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
                 return NotFound();
             }
-            if (product.UserId != User.FindFirst(e => e.Type == "Id").Value &&"admin"!= User.FindFirst(e => e.Type == "Id").Value)
+            var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
+            var role = await _userManager.GetRolesAsync(user);
+            if (product.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))
             {
                 return Forbid();
             }
