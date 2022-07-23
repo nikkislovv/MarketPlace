@@ -60,6 +60,7 @@ namespace Server.Controllers
             return Ok(feedbacksDto);
         }
 
+
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize(Roles = "client,seller")]
@@ -82,6 +83,26 @@ namespace Server.Controllers
             _repository.Feedback.CreateFeedbackForProduct(productId, feedback);
             await _repository.SaveAsync();
             return StatusCode(201);
+        }
+
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> DeleteOrderAsync([FromRoute] Guid Id)//удалить может админ;клиент и селлер(если они его создавали)
+        {
+            var order = await _repository.Order.GetOrderByIdAsync(Id, false);
+            if (order == null)
+            {
+                _logger.LogInfo($"Order with id: {Id} doesn't exist in the database.");
+                return NotFound();
+            }
+            var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
+            var role = await _userManager.GetRolesAsync(user);
+            if (order.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))
+            {
+                return Forbid();
+            }
+            _repository.Order.DeleteOrder(order);
+            await _repository.SaveAsync();
+            return NoContent();
         }
     }
 }

@@ -8,5 +8,7 @@ namespace Entities.RequestFeatures
 {
     public class FeedbackParameters : RequestParameters
     {
+        public string SearchByField { get; set; }//поиск по определенному полю
+        public string SearchTerm { get; set; }//значение этого поля
     }
 }
