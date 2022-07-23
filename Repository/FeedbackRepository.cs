@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -24,13 +25,15 @@ namespace Repository
         {
             Delete(feedback);
         }
-        public async Task<IEnumerable<Feedback>> GetAllFeedbacksAsync(bool trackChanges)
+        public async Task<PagedList<Feedback>> GetFeedbacksByProductAsync(Guid productId, FeedbackParameters feedbackParameters, bool trackChanges)
         {
-            return await FindAll(trackChanges).ToListAsync();
+            var feedbacks = await FindByCondition(e => e.ProductId.Equals(productId), trackChanges)
+                .OrderByDescending(e => e.Rating)
+                .Skip((feedbackParameters.PageNumber - 1) * feedbackParameters.PageSize)
+                .Take(feedbackParameters.PageSize)
+                .ToListAsync();
+            var count = await FindByCondition(e => e.ProductId.Equals(productId), trackChanges).CountAsync();
+            return new PagedList<Feedback>(feedbacks, count, feedbackParameters.PageNumber, feedbackParameters.PageSize);
         }
-        //public async Task<IEnumerable<Feedback>> GetFeedbacksByAccountAsync(Guid userId, bool trackChanges)
-        //{
-        //    return await FindByCondition(e => e.UserId.Equals(userId), trackChanges).ToListAsync();
-        //}
     }
 }

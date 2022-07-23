@@ -66,5 +66,17 @@ namespace ProductService
             }
             return false;
         }
+
+        public bool CheckFeedbackInProduct(IEnumerable<Feedback> feedbacks, string userId)
+        {
+            foreach (Feedback item in feedbacks)
+            {
+                if (item.UserId == userId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

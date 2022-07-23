@@ -9,7 +9,8 @@ namespace Entities.DataTransferObjects.AccountDTO
 {
     public class UserForAuthenticationDto
     {
-        [Required(ErrorMessage = "User name is required")]
+        [Required(ErrorMessage = "UserName is required")]
+        [MaxLength(15, ErrorMessage = "Cant be more than 15")]
         public string UserName { get; set; }
         [Required(ErrorMessage = "Password name is required")]
         public string Password { get; set; }

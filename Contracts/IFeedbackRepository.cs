@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Entities.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Contracts
     {
         void CreateFeedbackForProduct(Guid productId,Feedback feedback);
         void DeleteFeedback(Feedback feedback);
-        Task<IEnumerable<Feedback>> GetAllFeedbacksAsync(bool trackChanges);
+        Task<PagedList<Feedback>> GetFeedbacksByProductAsync(Guid productId, FeedbackParameters feedbackParameters, bool trackChanges);
 
     }
 }

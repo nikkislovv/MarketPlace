@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Entities.DataTransferObjects.FeedbackDTO
 {
-    public class FeedbackToCreateDto
+    public class FeedbackToShowDto
     {
-        [Required(ErrorMessage = "Username is required")]
-        [Range(0, 5, ErrorMessage = "Can be from 0 to 5")]
+        public Guid Id { get; set; }
         public double Rating { get; set; }
-        [MaxLength(100, ErrorMessage = "Cant be more than 100")]
         public string Comment { get; set; }
+        public string ProductName { get; set; }//mapping
+        public string UserName { get; set; }//mapping
     }
 }

@@ -9,7 +9,10 @@ namespace Server.MapperProfiles
         public FeedbackProfile()
         {
             CreateMap<FeedbackToCreateDto, Feedback>();
-            
+            CreateMap<Feedback, FeedbackToShowDto>()
+                    .ForMember(c => c.ProductName, opt => opt.MapFrom(x => x.Product.Name))
+                    .ForMember(c => c.UserName, opt => opt.MapFrom(x => x.User.FullName));
+
 
         }
     }

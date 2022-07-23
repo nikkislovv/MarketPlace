@@ -13,5 +13,6 @@ namespace ApiApplication.Contracts
         Task<bool> CheckForAvailability(IEnumerable<Guid> productsIds);
         Task<bool> ControlOfQuantity(IEnumerable<Product> productsIds);
         bool CheckProductInOrders(IEnumerable<Order> orders, string userId);
+        bool CheckFeedbackInProduct(IEnumerable<Feedback> feedbacks, string userId);
     }
 }
