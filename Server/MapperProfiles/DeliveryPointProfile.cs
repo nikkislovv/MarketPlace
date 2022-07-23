@@ -10,9 +10,9 @@ namespace Server.MapperProfiles
         public DeliveryPointProfile()
         {
             CreateMap<DeliveryPoint, DeliveryPointToShowDto>();
-            //CreateMap<Feedback, FeedbackToShowDto>()
-            //        .ForMember(c => c.ProductName, opt => opt.MapFrom(x => x.Product.Name))
-            //        .ForMember(c => c.UserName, opt => opt.MapFrom(x => x.User.FullName));
+            CreateMap<DeliveryPointToCreateDto, DeliveryPoint>();
+            CreateMap<DeliveryPointToUpdateDto, DeliveryPoint>();
+
 
 
         }

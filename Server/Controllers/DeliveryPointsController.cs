@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Server.ActionFilters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,6 +50,63 @@ namespace Server.Controllers
             }
             var deliveryPointsDto = _mapper.Map<IEnumerable<DeliveryPointToShowDto>>(deliveryPoints);
             return Ok(deliveryPointsDto);
+        }
+
+
+        [HttpGet("{Id}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetDeliveryPointByIdAsync([FromRoute] Guid Id)
+        {
+            var deliveryPoint = await _repository.DeliveryPoint.GetDeliveryPointByIdAsync(Id,false);
+            if (deliveryPoint == null)
+            {
+                _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
+                return NotFound();
+            }
+            var productDto = _mapper.Map<DeliveryPointToShowDto>(deliveryPoint);
+            return Ok(productDto);
+        }
+
+        [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> CreateProducAsync([FromBody] DeliveryPointToCreateDto deliveryPointDto)
+        {
+            var deliveryPoint = _mapper.Map<DeliveryPoint>(deliveryPointDto);
+            _repository.DeliveryPoint.CreateDeliveryPoint(deliveryPoint);
+            await _repository.SaveAsync();
+            return StatusCode(201);
+        }
+
+        [HttpPut("{Id}")]
+        [Authorize(Roles = "admin")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        public async Task<IActionResult> UpdateDeliveryPointAsync([FromRoute] Guid Id, [FromBody] DeliveryPointToUpdateDto deliveryPointDto)
+        {
+            var deliveryPoint = await _repository.DeliveryPoint.GetDeliveryPointByIdAsync(Id, true);
+            if (deliveryPoint == null)
+            {
+                _logger.LogInfo($"DeliveryPoint with id: {Id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _mapper.Map(deliveryPointDto, deliveryPoint);
+            await _repository.SaveAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{Id}")]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> DeleteDeliveryPointAsync([FromRoute] Guid Id)
+        {
+            var deliveryPoint = await _repository.DeliveryPoint.GetDeliveryPointByIdAsync(Id, false);
+            if (deliveryPoint == null)
+            {
+                _logger.LogInfo($"DeliveryPoint with id: {Id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _repository.DeliveryPoint.DeleteDeliveryPoint(deliveryPoint);
+            await _repository.SaveAsync();
+            return NoContent();
         }
 
 

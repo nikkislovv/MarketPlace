@@ -104,7 +104,7 @@ namespace Server.Controllers
             {
                 return Forbid();
             }
-            var productToUpdate=_mapper.Map(productDto,product);
+            _mapper.Map(productDto,product);
             await _repository.SaveAsync();
             return NoContent();
         }
