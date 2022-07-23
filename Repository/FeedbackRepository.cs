@@ -26,6 +26,11 @@ namespace Repository
         {
             Delete(feedback);
         }
+        public async Task<Feedback> GetFeedbackByIdByProductAsync(Guid productId,Guid id, bool trackChanges)
+        {
+            return await FindByCondition(e => e.ProductId.Equals(productId) && e.Id.Equals(id),trackChanges)
+                .SingleOrDefaultAsync();
+        }
         public async Task<PagedList<Feedback>> GetFeedbacksByProductAsync(Guid productId, FeedbackParameters feedbackParameters, bool trackChanges)
         {
             var feedbacks = await FindByCondition(e => e.ProductId.Equals(productId), trackChanges)

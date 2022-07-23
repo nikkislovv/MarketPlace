@@ -13,6 +13,7 @@ namespace Contracts
         void CreateFeedbackForProduct(Guid productId,Feedback feedback);
         void DeleteFeedback(Feedback feedback);
         Task<PagedList<Feedback>> GetFeedbacksByProductAsync(Guid productId, FeedbackParameters feedbackParameters, bool trackChanges);
+        Task<Feedback> GetFeedbackByIdByProductAsync(Guid productId, Guid id, bool trackChanges);
 
     }
 }

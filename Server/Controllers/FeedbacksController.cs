@@ -19,6 +19,7 @@ namespace Server.Controllers
 {
     [Route("api/Products/{productId}/[controller]")]
     [ApiController]
+    [Authorize]
     public class FeedbacksController : ControllerBase
     {
         private readonly IRepositoryManager _repository;
@@ -41,7 +42,7 @@ namespace Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetFeedbacksByProductAsync(Guid productId, [FromQuery] FeedbackParameters feedbackParameters)
+        public async Task<IActionResult> GetFeedbacksByProductAsync([FromRoute]Guid productId, [FromQuery] FeedbackParameters feedbackParameters)
         {
             var product = await _repository.Product.GetProductByIdAsync(productId, false);
             if (product == null)
@@ -64,7 +65,7 @@ namespace Server.Controllers
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize(Roles = "client,seller")]
-        public async Task<IActionResult> CreateFeedbackAsync(Guid productId, [FromBody] FeedbackToCreateDto feedbackDto)
+        public async Task<IActionResult> CreateFeedbackAsync([FromRoute]Guid productId, [FromBody] FeedbackToCreateDto feedbackDto)
         {
 
             var product = await _repository.Product.GetProductByIdAsync(productId, true);
@@ -86,21 +87,23 @@ namespace Server.Controllers
         }
 
         [HttpDelete("{Id}")]
-        public async Task<IActionResult> DeleteOrderAsync([FromRoute] Guid Id)//удалить может админ;клиент и селлер(если они его создавали)
+        public async Task<IActionResult> DeletefeedbackForProductAsync([FromRoute] Guid productId, [FromRoute] Guid Id)//удалить может админ;клиент и селлер(если они его создавали)
         {
-            var order = await _repository.Order.GetOrderByIdAsync(Id, false);
-            if (order == null)
+            var product = await _repository.Product.GetProductByIdAsync(productId, false);
+            if (product == null)
             {
-                _logger.LogInfo($"Order with id: {Id} doesn't exist in the database.");
+                _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
                 return NotFound();
             }
+            var feedback=await _repository.Feedback.GetFeedbackByIdByProductAsync(productId,Id,true);
+
             var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
             var role = await _userManager.GetRolesAsync(user);
-            if (order.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))
+            if (feedback.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))
             {
                 return Forbid();
             }
-            _repository.Order.DeleteOrder(order);
+            _repository.Feedback.DeleteFeedback(feedback);
             await _repository.SaveAsync();
             return NoContent();
         }
