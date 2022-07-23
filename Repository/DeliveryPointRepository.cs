@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,15 @@ namespace Repository
         {
             return await FindByCondition(e => e.Id.Equals(id), trackChanges).SingleOrDefaultAsync();
         }
-        public async Task<IEnumerable<DeliveryPoint>> GetAllDeliveryPointsAsync(bool trackChanges)
+        public async Task<PagedList<DeliveryPoint>> GetAllDeliveryPointsAsync(DeliveryPointParameters deliveryPointParameters,bool trackChanges)
         {
-            return await FindAll(trackChanges).ToListAsync();
+            var deliveryPoints = await FindAll(trackChanges)
+               .OrderBy(e => e.Address)//sorting
+               .Skip((deliveryPointParameters.PageNumber - 1) * deliveryPointParameters.PageSize)//paging
+               .Take(deliveryPointParameters.PageSize)
+               .ToListAsync();
+            var count = await FindAll(false).CountAsync();
+            return new PagedList<DeliveryPoint>(deliveryPoints, count, deliveryPointParameters.PageNumber, deliveryPointParameters.PageSize);
         }
         
         public void UpdateDeliveryPoint(DeliveryPoint deliveryPoint)

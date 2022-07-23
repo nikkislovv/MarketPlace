@@ -10,7 +10,7 @@ namespace Repository.Extensions
 {
     public static class RepositoryFeedbackExtensions
     {
-        public static IQueryable<Feedback> Search(this IQueryable<Feedback> feedbacks, string searchByField, string searchTerm)
+        public static IQueryable<Feedback> Search(this IQueryable<Feedback> feedbacks, string searchByField, string searchTerm)//только для userid
         {
             if (string.IsNullOrWhiteSpace(searchTerm) || string.IsNullOrWhiteSpace(searchByField))
                 return feedbacks;

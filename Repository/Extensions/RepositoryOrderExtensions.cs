@@ -8,7 +8,7 @@ namespace ApiApplication.Repository.RepositoryPhoneExtensions
 {
     public static class RepositoryOrderExtensions
     {
-        public static IQueryable<Order> Search(this IQueryable<Order> orders, string searchByField, string searchTerm)
+        public static IQueryable<Order> Search(this IQueryable<Order> orders, string searchByField, string searchTerm)//только для deliveryPointId и userId
         {
             if (string.IsNullOrWhiteSpace(searchTerm)|| string.IsNullOrWhiteSpace(searchByField))
                 return orders;

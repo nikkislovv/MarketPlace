@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Entities.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Contracts
     {
         void CreateDeliveryPoint(DeliveryPoint deliveryPoint);
         void DeleteDeliveryPoint(DeliveryPoint deliveryPoint);
-        Task<IEnumerable<DeliveryPoint>> GetAllDeliveryPointsAsync( bool trackChanges);
+        Task<PagedList<DeliveryPoint>> GetAllDeliveryPointsAsync(DeliveryPointParameters deliveryPointParameters, bool trackChanges);
         void UpdateDeliveryPoint(DeliveryPoint deliveryPoint);
         Task<DeliveryPoint> GetDeliveryPointByIdAsync(Guid id, bool trackChanges);
 

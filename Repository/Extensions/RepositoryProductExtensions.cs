@@ -11,7 +11,7 @@ namespace ApiApplication.Repository.RepositoryPhoneExtensions
         public static IQueryable<Product> FilterProducts(this IQueryable<Product> products, uint minPrice, uint maxPrice) =>
         products.Where(e => (e.Price >= minPrice && e.Price <= maxPrice));
 
-        public static IQueryable<Product> Search(this IQueryable<Product> products, string searchByField, string searchTerm)
+        public static IQueryable<Product> Search(this IQueryable<Product> products, string searchByField, string searchTerm)//только для warehouseid userid
         {
             if (string.IsNullOrWhiteSpace(searchTerm)|| string.IsNullOrWhiteSpace(searchByField))
                 return products;
