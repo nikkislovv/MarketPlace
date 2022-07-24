@@ -61,14 +61,10 @@ namespace Server.Controllers
         }
 
         [HttpGet("{Id}")]
+        [ServiceFilter(typeof(ValidateOrderExistsAttribute))]
         public async Task<IActionResult> GetOrderByIdAsync([FromRoute] Guid Id)//получить может админ;клиент и селлер(если они его создавали)
         {
-            var order=await _repository.Order.GetOrderByIdAsync(Id,true);
-            if (order == null)
-            {
-                _logger.LogInfo($"Order with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var order = HttpContext.Items["order"] as Order;
             var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
             var role = await _userManager.GetRolesAsync(user);
             if (order.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))
@@ -110,14 +106,10 @@ namespace Server.Controllers
 
         [HttpPut("{Id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateOrderExistsAttribute))]
         public async Task<IActionResult> UpdateOrderAsync([FromRoute] Guid Id,OrderToUpdateDto orderDto)
         {
-            var order=await _repository.Order.GetOrderByIdAsync(Id,true);
-            if (order == null)
-            {
-                _logger.LogInfo($"Order with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var order = HttpContext.Items["order"] as Order;
             var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
             var role =await _userManager.GetRolesAsync(user);
             if (order.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))
@@ -125,21 +117,17 @@ namespace Server.Controllers
                 return Forbid();
             }
             _mapper.Map(orderDto, order);
-            _productManager.ClearProductsInCollection(order);
+            //_productManager.ClearProductsInCollection(order);
             await _repository.SaveAsync();
             return NoContent();
         }
 
 
         [HttpDelete("{Id}")]
+        [ServiceFilter(typeof(ValidateOrderExistsAttribute))]
         public async Task<IActionResult> DeleteOrderAsync([FromRoute] Guid Id)//удалить может админ;клиент и селлер(если они его создавали)
         {
-            var order = await _repository.Order.GetOrderByIdAsync(Id, false);
-            if (order == null)
-            {
-                _logger.LogInfo($"Order with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var order = HttpContext.Items["order"] as Order;
             var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
             var role = await _userManager.GetRolesAsync(user);
             if (order.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))

@@ -42,14 +42,10 @@ namespace Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
         public async Task<IActionResult> GetFeedbacksByProductAsync([FromRoute]Guid productId, [FromQuery] FeedbackParameters feedbackParameters)
         {
-            var product = await _repository.Product.GetProductByIdAsync(productId, false);
-            if (product == null)
-            {
-                _logger.LogInfo($"Product with id: {productId} doesn't exist in the database.");
-                return NotFound();
-            }
+            var product = HttpContext.Items["product"] as Product;
             var feedbacks = await _repository.Feedback.GetFeedbacksByProductAsync(productId, feedbackParameters, true);
             if (feedbacks.Count() == 0)
             {
@@ -63,17 +59,12 @@ namespace Server.Controllers
 
 
         [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize(Roles = "client,seller")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
         public async Task<IActionResult> CreateFeedbackAsync([FromRoute]Guid productId, [FromBody] FeedbackToCreateDto feedbackDto)
         {
-
-            var product = await _repository.Product.GetProductByIdAsync(productId, true);
-            if (product == null)
-            {
-                _logger.LogInfo($"Product with id: {productId} doesn't exist in the database.");
-                return NotFound();
-            }
+            var product = HttpContext.Items["product"] as Product;
             var userId = User.FindFirst(e => e.Type == "Id").Value;
             if (!_productManager.CheckProductInOrders(product.Orders,userId) || _productManager.CheckFeedbackInProduct(product.Feedbacks,userId))//разрешает только если заказывал продукт(запрещает если уже оставлял отзыв для продукта)
             {
@@ -87,16 +78,16 @@ namespace Server.Controllers
         }
 
         [HttpDelete("{Id}")]
+        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
         public async Task<IActionResult> DeletefeedbackForProductAsync([FromRoute] Guid productId, [FromRoute] Guid Id)//удалить может админ;клиент и селлер(если они его создавали)
         {
-            var product = await _repository.Product.GetProductByIdAsync(productId, false);
-            if (product == null)
+            var product = HttpContext.Items["product"] as Product;
+            var feedback =await _repository.Feedback.GetFeedbackByIdByProductAsync(productId,Id,true);
+            if (feedback == null)
             {
-                _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
+                _logger.LogInfo($"Feedback with id: {Id} doesn't exist in the database.");
                 return NotFound();
             }
-            var feedback=await _repository.Feedback.GetFeedbackByIdByProductAsync(productId,Id,true);
-
             var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
             var role = await _userManager.GetRolesAsync(user);
             if (feedback.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))

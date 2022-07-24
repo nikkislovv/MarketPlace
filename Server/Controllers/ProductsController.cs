@@ -56,25 +56,21 @@ namespace Server.Controllers
 
         [HttpGet("{Id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetProductByIdAsync([FromRoute]Guid Id)//Получение продукта по Id
+        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
+        public IActionResult GetProductByIdAsync([FromRoute]Guid Id)//Получение продукта по Id
         {
-            var product = await _repository.Product.GetProductByIdAsync(Id, true);
-            if (product == null)
-            {
-                _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
-            var productDto=_mapper.Map<ProductToShowDto>(product);
+            var product = HttpContext.Items["product"] as Product;
+            var productDto =_mapper.Map<ProductToShowDto>(product);
             return Ok(productDto);
         }
 
 
         [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize(Roles = "seller")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateProducAsync([FromBody] ProductToCreateDto productDto)//Создание продукта с привязкой к скалду через dto(только seller)
         {
-            var warehouse = await _repository.Warehouse.GetWarehouseByIdAsync(productDto.WarehouseId,false);
+            var warehouse = await _repository.Warehouse.GetWarehouseByIdAsync(productDto.WarehouseId,false);//не можем использовать атрибут ,тк в атрибуте id берем из контекста запроса
             if (warehouse == null)
             {
                 _logger.LogInfo($"Warehouse with id: {productDto.WarehouseId} doesn't exist in the database.");
@@ -90,14 +86,11 @@ namespace Server.Controllers
 
         [HttpPut("{Id}")]
         [Authorize(Roles = "admin,seller")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
         public async Task<IActionResult> UpdateProductAsync([FromRoute] Guid Id,[FromBody] ProductToUpdateDto productDto)//обновление продукта, (admin) или seller (который создавал)
         {
-            var product =await  _repository.Product.GetProductByIdAsync(Id, true);
-            if (product == null)
-            {
-                _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var product = HttpContext.Items["product"] as Product;
             var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
             var role = await _userManager.GetRolesAsync(user);
             if (product.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))
@@ -112,14 +105,11 @@ namespace Server.Controllers
 
         [HttpDelete("{Id}")]
         [Authorize(Roles = "admin,seller")]
+        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
+
         public async Task<IActionResult> DeleteProductAsync([FromRoute]Guid Id)//удаление продукта, (admin) или seller (который создавал)
         {
-            var product=await _repository.Product.GetProductByIdAsync(Id,false);
-            if (product == null)
-            {
-                _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var product = HttpContext.Items["product"] as Product;
             var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
             var role = await _userManager.GetRolesAsync(user);
             if (product.UserId != User.FindFirst(e => e.Type == "Id").Value && !role.Contains("admin"))

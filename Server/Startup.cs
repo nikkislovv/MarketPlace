@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using NLog;
 using ProductService;
+using Server.ActionFilters;
 using Server.Auth;
 using Server.Extensions;
 using System;
@@ -49,9 +50,8 @@ namespace Server
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
-
             services.AddAutoMapper(typeof(Startup));
-            services.ConfigureValidationFilter();
+            services.ConfigureFilters();
             services.AddScoped<IProductManager, ProductManager>();
 
 

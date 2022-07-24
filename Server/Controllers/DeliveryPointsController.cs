@@ -55,14 +55,10 @@ namespace Server.Controllers
 
         [HttpGet("{Id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetDeliveryPointByIdAsync([FromRoute] Guid Id)
+        [ServiceFilter(typeof(ValidateDeliveryPointExistsAttribute))]
+        public IActionResult GetDeliveryPointByIdAsync([FromRoute] Guid Id)
         {
-            var deliveryPoint = await _repository.DeliveryPoint.GetDeliveryPointByIdAsync(Id,false);
-            if (deliveryPoint == null)
-            {
-                _logger.LogInfo($"Product with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var deliveryPoint = HttpContext.Items["deliveryPoint"] as DeliveryPoint;
             var productDto = _mapper.Map<DeliveryPointToShowDto>(deliveryPoint);
             return Ok(productDto);
         }
@@ -81,14 +77,10 @@ namespace Server.Controllers
         [HttpPut("{Id}")]
         [Authorize(Roles = "admin")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateDeliveryPointExistsAttribute))]
         public async Task<IActionResult> UpdateDeliveryPointAsync([FromRoute] Guid Id, [FromBody] DeliveryPointToUpdateDto deliveryPointDto)
         {
-            var deliveryPoint = await _repository.DeliveryPoint.GetDeliveryPointByIdAsync(Id, true);
-            if (deliveryPoint == null)
-            {
-                _logger.LogInfo($"DeliveryPoint with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var deliveryPoint = HttpContext.Items["deliveryPoint"] as DeliveryPoint;
             _mapper.Map(deliveryPointDto, deliveryPoint);
             await _repository.SaveAsync();
             return NoContent();
@@ -96,14 +88,10 @@ namespace Server.Controllers
 
         [HttpDelete("{Id}")]
         [Authorize(Roles = "admin")]
+        [ServiceFilter(typeof(ValidateDeliveryPointExistsAttribute))]
         public async Task<IActionResult> DeleteDeliveryPointAsync([FromRoute] Guid Id)
         {
-            var deliveryPoint = await _repository.DeliveryPoint.GetDeliveryPointByIdAsync(Id, false);
-            if (deliveryPoint == null)
-            {
-                _logger.LogInfo($"DeliveryPoint with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var deliveryPoint = HttpContext.Items["deliveryPoint"] as DeliveryPoint;
             _repository.DeliveryPoint.DeleteDeliveryPoint(deliveryPoint);
             await _repository.SaveAsync();
             return NoContent();

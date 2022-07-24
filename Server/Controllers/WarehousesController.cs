@@ -56,22 +56,18 @@ namespace Server.Controllers
 
         [HttpGet("{Id}")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetlWarehouseByIdAsync([FromRoute] Guid Id)
+        [ServiceFilter(typeof(ValidateWarehouseExistsAttribute))]
+        public IActionResult GetlWarehouseByIdAsync([FromRoute] Guid Id)
         {
-            var warehouse = await _repository.Warehouse.GetWarehouseByIdAsync(Id, false);
-            if (warehouse == null)
-            {
-                _logger.LogInfo($"Warehouse with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var warehouse = HttpContext.Items["warehouse"] as Warehouse;
             var warehouseDto = _mapper.Map<WarehouseToShowDto>(warehouse);
             return Ok(warehouseDto);
         }
 
 
         [HttpPost]
-        [ServiceFilter(typeof(ValidationFilterAttribute))]
         [Authorize(Roles = "admin")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateWarehouseAsync([FromBody] WarehouseToCreateDto warehouseDto)
         {
             var warehouse = _mapper.Map<Warehouse>(warehouseDto);
@@ -84,14 +80,10 @@ namespace Server.Controllers
         [HttpPut("{Id}")]
         [Authorize(Roles = "admin")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateWarehouseExistsAttribute))]
         public async Task<IActionResult> UpdateDeliveryPointAsync([FromRoute] Guid Id, [FromBody] WarehouseToUpdateDto warehouseDto)
         {
-            var warehouse = await _repository.Warehouse.GetWarehouseByIdAsync(Id, true);
-            if (warehouse == null)
-            {
-                _logger.LogInfo($"Warehouse with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var warehouse = HttpContext.Items["warehouse"] as Warehouse;          
             _mapper.Map(warehouseDto, warehouse);
             await _repository.SaveAsync();
             return NoContent();
@@ -99,14 +91,10 @@ namespace Server.Controllers
 
         [HttpDelete("{Id}")]
         [Authorize(Roles = "admin")]
+        [ServiceFilter(typeof(ValidateWarehouseExistsAttribute))]
         public async Task<IActionResult> DeleteWarehouseAsync([FromRoute] Guid Id)
         {
-            var warehouse = await _repository.Warehouse.GetWarehouseByIdAsync(Id, false);
-            if (warehouse == null)
-            {
-                _logger.LogInfo($"Warehouse with id: {Id} doesn't exist in the database.");
-                return NotFound();
-            }
+            var warehouse = HttpContext.Items["warehouse"] as Warehouse;
             _repository.Warehouse.DeleteWarehouse(warehouse);
             await _repository.SaveAsync();
             return NoContent();

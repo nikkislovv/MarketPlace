@@ -32,9 +32,13 @@ namespace Server.Extensions
             b.MigrationsAssembly("Server")));
 
         }
-        public static void ConfigureValidationFilter(this IServiceCollection services)
+        public static void ConfigureFilters(this IServiceCollection services)
         {
             services.AddScoped<ValidationFilterAttribute>();
+            services.AddScoped<ValidateWarehouseExistsAttribute>();
+            services.AddScoped<ValidateDeliveryPointExistsAttribute>();
+            services.AddScoped<ValidateProductExistsAttribute>();
+            services.AddScoped<ValidateOrderExistsAttribute>();
         }
         public static void ConfigureIdentity(this IServiceCollection services)
         {
