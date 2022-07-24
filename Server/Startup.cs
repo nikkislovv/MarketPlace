@@ -45,6 +45,11 @@ namespace Server
             services.ConfigureIdentity();
             services.ConfigureJWT();
             services.ConfigureRepositoryManager();
+            services.Configure<ApiBehaviorOptions>(options =>//for validation
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
             services.AddAutoMapper(typeof(Startup));
             services.ConfigureValidationFilter();
             services.AddScoped<IProductManager, ProductManager>();

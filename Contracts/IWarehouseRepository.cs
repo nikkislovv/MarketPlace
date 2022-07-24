@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Entities.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Contracts
     {
         void CreateWarehouse(Warehouse warehouse);
         void DeleteWarehouse(Warehouse warehouse);
-        Task<IEnumerable<Warehouse>> GetAllWarehousesAsync(bool trackChanges);
+        Task<PagedList<Warehouse>> GetAllWarehousesAsync(WarehouseParameters warehouseParameters, bool trackChanges);
         void UpdateWarehouse(Warehouse warehouse);
         Task<Warehouse> GetWarehouseByIdAsync(Guid id, bool trackChanges);
     }

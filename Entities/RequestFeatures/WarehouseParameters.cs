@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Entities.RequestFeatures
 {
-    public class DeliveryPointParameters : RequestParameters
-    {//только paging and sorting
+    public class WarehouseParameters :RequestParameters
+    {
+       //only paging and sorting
     }
 }

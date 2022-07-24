@@ -39,7 +39,7 @@ namespace Server.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllDeliveryPointsAsync([FromQuery] DeliveryPointParameters deliveryPointParameters)//Получение всех точек доставок
+        public async Task<IActionResult> GetAllDeliveryPointsAsync([FromQuery] DeliveryPointParameters deliveryPointParameters)
         {
             var deliveryPoints = await _repository.DeliveryPoint.GetAllDeliveryPointsAsync(deliveryPointParameters, false);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(deliveryPoints.MetaData));
@@ -108,8 +108,5 @@ namespace Server.Controllers
             await _repository.SaveAsync();
             return NoContent();
         }
-
-
-
     }
 }
