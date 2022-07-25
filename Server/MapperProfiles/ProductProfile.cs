@@ -14,6 +14,7 @@ namespace Server.MapperProfiles
             CreateMap<ProductToShowDto, Product>();
             CreateMap<ProductToCreateDto, Product>();
             CreateMap<ProductToUpdateDto, Product>();
+            CreateMap<Product, ProductToShowInOrderDto>();
         }
     }
 }

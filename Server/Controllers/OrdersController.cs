@@ -66,7 +66,7 @@ namespace Server.Controllers
             var orders = await _repository.Order.GetAllOrdersAsync(orderParameters,true);
             if (orders.Count() == 0)
             {
-                _logger.LogInfo($"No Products in the database.");
+                _logger.LogInfo($"No Orders in the database.");
                 return NotFound();
             }
 

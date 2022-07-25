@@ -1,6 +1,4 @@
-﻿using Entities.DataTransferObjects.FeedbackDTO;
-using Entities.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entities.DataTransferObjects.ProductDTO
 {
-    public class ProductToShowDto
+    public class ProductToShowInOrderDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -17,11 +15,6 @@ namespace Entities.DataTransferObjects.ProductDTO
         public string Description { get; set; }
         public string WarehouseAddress { get; set; }//mapping
         public string SellerName { get; set; }//mapping
-        public virtual ICollection<FeedbackToShowDto> Feedbacks { get; set; }//mapping
-        public ProductToShowDto()
-        {
-            Feedbacks = new List<FeedbackToShowDto>();
-        }
+    
     }
-
 }

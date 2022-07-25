@@ -12,7 +12,10 @@ namespace Server.MapperProfiles
             CreateMap<OrderToUpdateDto, Order>();
             CreateMap<Order, OrderToShowDto>()
                     .ForMember(c => c.DeliveryPointAddress, opt => opt.MapFrom(x => x.DeliveryPoint.Address))
-                    .ForMember(c => c.UserName, opt => opt.MapFrom(x => x.User.FullName));
+                    .ForMember(c => c.UserName, opt => opt.MapFrom(x => x.User.FullName))
+                    .ForMember(c => c.Products, opt => opt.MapFrom(x => x.Products));
+
+
 
 
 

@@ -15,10 +15,10 @@ namespace Entities.DataTransferObjects.OrderDTO
         public string ContactPhone { get; set; } // контактный телефон покупателя
         public string DeliveryPointAddress { get; set; }//mapping
         public string UserName { get; set; }//mapping
-        public virtual ICollection<ProductToShowDto> Products { get; set; }
+        public virtual ICollection<ProductToShowInOrderDto> Products { get; set; }
         public OrderToShowDto()
         {
-            Products = new List<ProductToShowDto>();
+            Products = new List<ProductToShowInOrderDto>();
         }
     }
 }
