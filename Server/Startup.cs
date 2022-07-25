@@ -53,7 +53,7 @@ namespace Server
             services.AddAutoMapper(typeof(Startup));
             services.ConfigureFilters();
             services.AddScoped<IProductManager, ProductManager>();
-
+            services.ConfigureSwagger();
 
             services.AddControllers();
         }
@@ -70,6 +70,13 @@ namespace Server
             {
                 app.UseHsts();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(s =>
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "MarketPlace");
+
+            });
+
             app.ConfigureExceptionHandler(logger);//middleware global error handling(we can remove try-catch blocks)
             app.UseHttpsRedirection();
             app.UseStaticFiles();

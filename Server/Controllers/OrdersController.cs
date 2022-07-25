@@ -39,7 +39,22 @@ namespace Server.Controllers
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Get list of Orders
+        /// </summary>
+        /// <param name="orderParameters"></param>
+        /// <returns>The orders list</returns>
+        /// <response code="200">Returns the list of all Orders</response>
+        /// <response code="401">You are not authorized</response>
+        /// <response code="403">You have no rules</response>
+        /// <response code="404">No Orders in the database</response>
+        /// <response code="500">Server error</response>
         [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetAllOrdersAsync([FromQuery] OrderParameters orderParameters)//получить может админ;клиент и селлер(если они его создавали)
         {
             var user = await _userManager.FindByIdAsync(User.FindFirst(e => e.Type == "Id").Value);
@@ -60,8 +75,23 @@ namespace Server.Controllers
             return Ok(ordersDto);
         }
 
+        /// <summary>
+        /// Get one Order by id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns>One Order</returns>
+        /// <response code="200">Returns one Order</response>
+        /// <response code="401">You are not authorized</response>
+        /// <response code="403">You have no rules</response>
+        /// <response code="404">Order with this id not found</response>
+        /// <response code="500">Server error</response>
         [HttpGet("{Id}")]
         [ServiceFilter(typeof(ValidateOrderExistsAttribute))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetOrderByIdAsync([FromRoute] Guid Id)//получить может админ;клиент и селлер(если они его создавали)
         {
             var order = HttpContext.Items["order"] as Order;
@@ -75,11 +105,28 @@ namespace Server.Controllers
             return Ok(orderDto);
         }
 
-
+        /// <summary>
+        /// Create one new Order
+        /// </summary>
+        /// <param name="orderDto"></param>
+        /// <returns></returns>
+        /// <response code="201">Order created</response>
+        /// <response code="400">New Order is null</response>
+        /// <response code="401">You are not authorized</response>
+        /// <response code="403">You have no rules</response>
+        /// <response code="404">Product in the order is out of warehouse(Or there is no order in the db)</response>
+        /// <response code="422">New Order not valid</response>
+        /// <response code="500">Server error</response>
         [HttpPost]
         [Authorize(Roles = "client,seller")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> CreateOrderAsync([FromBody]OrderToCreateDto orderDto)
         {
             if (!await _productManager.CheckForAvailability(orderDto.ProductsIds))//проверяем на наличие продуктов
@@ -104,9 +151,29 @@ namespace Server.Controllers
             return StatusCode(201);
         }
 
+        /// <summary>
+        /// Update Order by id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <param name="orderDto"></param>
+        /// <returns></returns>
+        /// <response code="204">Order updated</response>
+        /// <response code="400">New Order is null</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">You have no rules</response>
+        /// <response code="404">Order with this id not found</response>
+        /// <response code="422">New Order not valid</response>
+        /// <response code="500">Server error</response>
         [HttpPut("{Id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateOrderExistsAttribute))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> UpdateOrderAsync([FromRoute] Guid Id,OrderToUpdateDto orderDto)
         {
             var order = HttpContext.Items["order"] as Order;
@@ -122,9 +189,23 @@ namespace Server.Controllers
             return NoContent();
         }
 
-
+        /// <summary>
+        /// Delete Order by id
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        /// <response code="204">Order deleted</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">You have no rules</response>
+        /// <response code="404">Order with this id not found</response>
+        /// <response code="500">Server error</response>
         [HttpDelete("{Id}")]
         [ServiceFilter(typeof(ValidateOrderExistsAttribute))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> DeleteOrderAsync([FromRoute] Guid Id)//удалить может админ;клиент и селлер(если они его создавали)
         {
             var order = HttpContext.Items["order"] as Order;

@@ -39,10 +39,22 @@ namespace Server.Controllers
             _productManager = productManager;
         }
 
-
+        /// <summary>
+        /// Get Feedbacks for Product by id
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="feedbackParameters"></param>
+        /// <returns>The products list</returns>
+        /// <response code="200">Returns the list of all DeliveryPoints</response>
+        /// <response code="404">No Product in the database</response>
+        /// <response code="404">No Feedbacks for this product in the database</response>
+        /// <response code="500">Server error</response>
         [HttpGet]
         [AllowAnonymous]
         [ServiceFilter(typeof(ValidateProductExistsAttribute))]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> GetFeedbacksByProductAsync([FromRoute]Guid productId, [FromQuery] FeedbackParameters feedbackParameters)
         {
             var product = HttpContext.Items["product"] as Product;
@@ -57,11 +69,30 @@ namespace Server.Controllers
             return Ok(feedbacksDto);
         }
 
-
+        /// <summary>
+        /// Create Feedback for Product by id
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="feedbackDto"></param>
+        /// <returns></returns>
+        /// <response code="201">Feedback created</response>
+        /// <response code="400">New Feedback is null</response>
+        /// <response code="401">You are not authorized</response>
+        /// <response code="404">No Product in the database</response>
+        /// <response code="403">You have no rules</response>
+        /// <response code="422">New Feedback not valid</response>
+        /// <response code="500">Server error</response>
         [HttpPost]
         [Authorize(Roles = "client,seller")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateProductExistsAttribute))]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(422)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> CreateFeedbackAsync([FromRoute]Guid productId, [FromBody] FeedbackToCreateDto feedbackDto)
         {
             var product = HttpContext.Items["product"] as Product;
@@ -77,8 +108,25 @@ namespace Server.Controllers
             return StatusCode(201);
         }
 
+        /// <summary>
+        /// Delete Feedback for Product by id
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        /// <response code="204">Feedback deleted</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">You have no rules</response>
+        /// <response code="404">Product with this id not found</response>
+        /// <response code="404">Feedback with this id not found</response>
+        /// <response code="500">Server error</response>
         [HttpDelete("{Id}")]
         [ServiceFilter(typeof(ValidateProductExistsAttribute))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(403)]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500)]
         public async Task<IActionResult> DeletefeedbackForProductAsync([FromRoute] Guid productId, [FromRoute] Guid Id)//удалить может админ;клиент и селлер(если они его создавали)
         {
             var product = HttpContext.Items["product"] as Product;

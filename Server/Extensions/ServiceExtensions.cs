@@ -8,9 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Repository;
 using Server.ActionFilters;
 using Server.Auth;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 namespace Server.Extensions
 {
@@ -91,6 +96,52 @@ namespace Server.Extensions
                            ValidateIssuerSigningKey = true,
                        };
                    });
+        }
+
+        public static void ConfigureSwagger(this IServiceCollection services)
+        {
+            services.AddSwaggerGen(s =>
+            {
+                s.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "MarketPlace",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Nikita Kislov",
+                        Email = "nilitakislov368@gmail.com",
+                        Url = new Uri("https://www.linkedin.com/in/nikita-kislov-2a6643245"),
+                    },
+
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                s.IncludeXmlComments(xmlPath);
+
+                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme//for auth
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Place to add JWT with Bearer",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Name = "Bearer",
+                        },
+                        new List<string>()
+                    }
+                });
+            });
+
         }
     }
 }
