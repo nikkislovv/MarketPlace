@@ -53,12 +53,12 @@ namespace Server.Controllers
         public async Task<IActionResult> GetAllWarehousesAsync([FromQuery] WarehouseParameters warehouseParameters)
         {
             var warehouses = await _repository.Warehouse.GetAllWarehousesAsync(warehouseParameters, false);
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(warehouses.MetaData));
             if (warehouses.Count() == 0)
             {
                 _logger.LogInfo($"No Warehouses in the database.");
                 return NotFound();
             }
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(warehouses.MetaData));
             var warehousesDto = _mapper.Map<IEnumerable<WarehouseToShowDto>>(warehouses);
             return Ok(warehousesDto);
         }

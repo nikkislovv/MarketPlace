@@ -51,13 +51,17 @@ namespace Server.Controllers
         /// <response code="500">Server error</response>
         [HttpGet]
         [AllowAnonymous]
-        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [ProducesResponseType(500)]
         public async Task<IActionResult> GetFeedbacksByProductAsync([FromRoute]Guid productId, [FromQuery] FeedbackParameters feedbackParameters)
         {
-            var product = HttpContext.Items["product"] as Product;
+            var product=await _repository.Product.GetProductByIdAsync(productId,false);
+            if (product == null)
+            {
+                _logger.LogInfo($"Product with id: {productId} doesn't exist in the database.");
+                return NotFound();
+            }
             var feedbacks = await _repository.Feedback.GetFeedbacksByProductAsync(productId, feedbackParameters, true);
             if (feedbacks.Count() == 0)
             {
@@ -85,7 +89,6 @@ namespace Server.Controllers
         [HttpPost]
         [Authorize(Roles = "client,seller")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
         [ProducesResponseType(201)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -95,7 +98,12 @@ namespace Server.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> CreateFeedbackAsync([FromRoute]Guid productId, [FromBody] FeedbackToCreateDto feedbackDto)
         {
-            var product = HttpContext.Items["product"] as Product;
+            var product = await _repository.Product.GetProductByIdAsync(productId, true);
+            if (product == null)
+            {
+                _logger.LogInfo($"Product with id: {productId} doesn't exist in the database.");
+                return NotFound();
+            }
             var userId = User.FindFirst(e => e.Type == "Id").Value;
             if (!_productManager.CheckProductInOrders(product.Orders,userId) || _productManager.CheckFeedbackInProduct(product.Feedbacks,userId))//разрешает только если заказывал продукт(запрещает если уже оставлял отзыв для продукта)
             {
@@ -121,7 +129,6 @@ namespace Server.Controllers
         /// <response code="404">Feedback with this id not found</response>
         /// <response code="500">Server error</response>
         [HttpDelete("{Id}")]
-        [ServiceFilter(typeof(ValidateProductExistsAttribute))]
         [ProducesResponseType(204)]
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
@@ -129,7 +136,12 @@ namespace Server.Controllers
         [ProducesResponseType(500)]
         public async Task<IActionResult> DeletefeedbackForProductAsync([FromRoute] Guid productId, [FromRoute] Guid Id)//удалить может админ;клиент и селлер(если они его создавали)
         {
-            var product = HttpContext.Items["product"] as Product;
+            var product = await _repository.Product.GetProductByIdAsync(productId, false);
+            if (product == null)
+            {
+                _logger.LogInfo($"Product with id: {productId} doesn't exist in the database.");
+                return NotFound();
+            }
             var feedback =await _repository.Feedback.GetFeedbackByIdByProductAsync(productId,Id,true);
             if (feedback == null)
             {

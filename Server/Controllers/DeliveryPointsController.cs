@@ -54,12 +54,12 @@ namespace Server.Controllers
         public async Task<IActionResult> GetAllDeliveryPointsAsync([FromQuery] DeliveryPointParameters deliveryPointParameters)
         {
             var deliveryPoints = await _repository.DeliveryPoint.GetAllDeliveryPointsAsync(deliveryPointParameters, false);
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(deliveryPoints.MetaData));
             if (deliveryPoints.Count() == 0)
             {
                 _logger.LogInfo($"No DeliveryPoints in the database.");
                 return NotFound();
             }
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(deliveryPoints.MetaData));
             var deliveryPointsDto = _mapper.Map<IEnumerable<DeliveryPointToShowDto>>(deliveryPoints);
             return Ok(deliveryPointsDto);
         }

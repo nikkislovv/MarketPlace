@@ -57,12 +57,12 @@ namespace Server.Controllers
             if (!productParameters.ValidPriceRange)
                 return BadRequest("MaxPrice can notbe less then MinPrice.");
             var products = await _repository.Product.GetAllProductsAsync(productParameters,true);
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(products.MetaData));
             if (products.Count()==0)
             {
                 _logger.LogInfo($"No Products in the database.");
                 return NotFound();
             }
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(products.MetaData));
             var productsDto=_mapper.Map<IEnumerable<ProductToShowDto>>(products);
             return Ok(productsDto);
         }
